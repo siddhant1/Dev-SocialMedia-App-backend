@@ -118,28 +118,6 @@ function validateProfile(Profile) {
     skills: Joi.string().required(),
     bio: Joi.string(),
     githubusername: Joi.string(),
-    experience: Joi.array().items(
-      Joi.object().keys({
-        title: Joi.string().required(),
-        company: Joi.string().required(),
-        location: Joi.string().required(),
-        from: Joi.date().required(),
-        to: Joi.date().required(),
-        current: Joi.boolean(),
-        description: Joi.string()
-      })
-    ),
-    education: Joi.array().items(
-      Joi.object().keys({
-        school: Joi.string().required(),
-        degree: Joi.string().required(),
-        fieldofstudy: Joi.string().required(),
-        from: Joi.date().required(),
-        to: Joi.date().required(),
-        current: Joi.boolean(),
-        description: Joi.string()
-      })
-    ),
     youtube: Joi.string(),
     twitter: Joi.string(),
     facebook: Joi.string(),
@@ -148,5 +126,7 @@ function validateProfile(Profile) {
   };
   return Joi.validate(Profile, schema);
 }
-module.exports.Profile = Profile = mongoose.model("profile", ProfileSchema);
+
+const Profile = mongoose.model("profile", ProfileSchema);
+module.exports.Profile = Profile;
 module.exports.validate = validateProfile;
