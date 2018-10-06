@@ -140,13 +140,11 @@ function validateProfile(Profile) {
         description: Joi.string()
       })
     ),
-    social: Joi.object().keys({
-      youtube: Joi.string(),
-      twitter: Joi.string(),
-      facebook: Joi.string(),
-      linkedin: Joi.string(),
-      instagram: Joi.string()
-    })
+    youtube: Joi.string(),
+    twitter: Joi.string(),
+    facebook: Joi.string(),
+    linkedin: Joi.string(),
+    instagram: Joi.string()
   };
   return Joi.validate(Profile, schema);
 }
