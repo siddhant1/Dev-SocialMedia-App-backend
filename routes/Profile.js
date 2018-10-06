@@ -72,7 +72,7 @@ router.post("/education", auth, async (req, res) => {
 });
 
 //add new experience
-router.post("/experienve", auth, async (req, res) => {
+router.post("/experience", auth, async (req, res) => {
   const { error } = validateExperience(req.body);
   if (error) {
     res.status(400).send(error.details[0].message);
@@ -85,15 +85,48 @@ router.post("/experienve", auth, async (req, res) => {
   }
 
   const newExp = {
-    title: req.body.school,
-    comapany: req.body.degree,
-    location: req.body.fieldofstudy,
+    title: req.body.title,
+    company: req.body.company,
+    location: req.body.location,
     from: req.body.from,
     to: req.body.to
   };
   if (req.body.current) newExp.current = req.body.current;
   if (req.body.description) newExp.current = req.body.description;
-  profile.education.unshift(newExp);
+  profile.experience.unshift(newExp);
+  await profile.save();
+  res.send(profile);
+});
+
+//delete experience
+
+router.delete("/experience/:id", auth, async (req, res) => {
+  const profile =await  Profile.findOne({ user: req.user._id });
+  if (!profile) {
+    res.status(400).send("Invalid Profile ID");
+    return;
+  }
+  console.log({ profile });
+  const removeIndex = profile.experience
+    .map(item => item.id)
+    .indexOf(req.params.id);
+  profile.experience.splice(removeIndex, 1);
+  await profile.save();
+  res.send(profile);
+});
+
+//delete education
+router.delete("/education/:id", auth, async (req, res) => {
+  const profile = await Profile.findOne({ user: req.user._id });
+  if (!profile) {
+    res.status(400).send("Invalid Profile Id");
+    return;
+  }
+  console.log({ profile });
+  const removeIndex = profile.education
+    .map(item => item.id)
+    .indexOf(req.params.id);
+  profile.education.splice(removeIndex, 1);
   await profile.save();
   res.send(profile);
 });
