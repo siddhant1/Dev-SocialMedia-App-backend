@@ -20,7 +20,7 @@ router.post("/", auth, async (req, res) => {
     return;
   }
   const profileFields = {};
-  profileFields.user = res.user._id;
+  profileFields.user = req.user._id;
   if (req.body.company) profileFields.company = req.body.company;
   if (req.body.website) profileFields.website = req.body.website;
   if (req.body.location) profileFields.location = req.body.location;
@@ -37,5 +37,6 @@ router.post("/", auth, async (req, res) => {
   if (req.body.facebook) profileFields.social.facebook = req.body.facebook;
   if (req.body.linkedin) profileFields.social.linkedin = req.body.linkedin;
   if (req.body.instagram) profileFields.social.instagram = req.body.instagram;
+  console.log(profileFields);
 });
 module.exports = router;
