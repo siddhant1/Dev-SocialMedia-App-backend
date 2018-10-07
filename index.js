@@ -10,6 +10,7 @@ Joi.objectId = require("joi-objectid")(Joi);
 // --------------------
 const User = require("./routes/User");
 const Profile = require("./routes/Profile");
+const Post = require("./routes/Posts");
 // --------------------
 //middlewares
 app.use(cors());
@@ -22,6 +23,7 @@ app.use(morgan("tiny"));
 //Routes Link
 app.use("/api/user", User);
 app.use("/api/profile", Profile);
+app.use("/api/post", Post);
 
 mongoose
   .connect(
