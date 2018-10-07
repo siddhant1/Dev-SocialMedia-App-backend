@@ -57,16 +57,16 @@ router.post("/education", auth, async (req, res) => {
     return;
   }
 
-  const newExp = {
+  const newEdu = {
     school: req.body.school,
     degree: req.body.degree,
     fieldofstudy: req.body.fieldofstudy,
     from: req.body.from,
     to: req.body.to
   };
-  if (req.body.current) newExp.current = req.body.current;
-  if (req.body.description) newExp.current = req.body.description;
-  profile.education.unshift(newExp);
+  if (req.body.current) newEdu.current = req.body.current;
+  if (req.body.description) newEdu.current = req.body.description;
+  profile.education.unshift(newEdu);
   await profile.save();
   res.send(profile);
 });
@@ -99,9 +99,8 @@ router.post("/experience", auth, async (req, res) => {
 });
 
 //delete experience
-
 router.delete("/experience/:id", auth, async (req, res) => {
-  const profile =await  Profile.findOne({ user: req.user._id });
+  const profile = await Profile.findOne({ user: req.user._id });
   if (!profile) {
     res.status(400).send("Invalid Profile ID");
     return;
@@ -129,6 +128,71 @@ router.delete("/education/:id", auth, async (req, res) => {
   profile.education.splice(removeIndex, 1);
   await profile.save();
   res.send(profile);
+});
+
+//update experience
+router.put("/experience/:id", auth, async (req, res) => {
+  const { error } = validateExperience(req.body);
+  if (error) {
+    res.status(400).send(error.details[0].message);
+    return;
+  }
+  const profile = await Profile.findOne({ user: req.user._id });
+  if (!profile) {
+    res.status(404).send("No profile with the given Id is found");
+    return;
+  }
+  const newExp = {
+    title: req.body.title,
+    company: req.body.company,
+    location: req.body.location,
+    from: req.body.from,
+    to: req.body.to
+  };
+  if (req.body.current) newExp.current = req.body.current;
+  if (req.body.description) newExp.current = req.body.description;
+  const updateIndex = profile.experience
+    .map(item => item.id)
+    .indexOf(req.params.id);
+  if (updateIndex === -1) {
+    res.status(400).send("Invalid experience Id");
+    return;
+  }
+  profile.experience[updateIndex] = newExp;
+  await profile.save();
+  res.status(202).send(profile);
+});
+//update education
+router.put("/education/:id", auth, async (req, res) => {
+  const { error } = validateEducation(req.body);
+  if (error) {
+    res.status(400).send(error.details[0].message);
+    return;
+  }
+  const profile = await Profile.findOne({ user: req.user._id });
+  if (!profile) {
+    res.status(404).send("No profile with the given Id is found");
+    return;
+  }
+  const newEdu = {
+    school: req.body.school,
+    degree: req.body.degree,
+    fieldofstudy: req.body.fieldofstudy,
+    from: req.body.from,
+    to: req.body.to
+  };
+  if (req.body.current) newEdu.current = req.body.current;
+  if (req.body.description) newEdu.current = req.body.description;
+  const updateIndex = profile.education
+    .map(item => item.id)
+    .indexOf(req.params.id);
+  if (updateIndex === -1) {
+    res.status(400).send("Invalid education Id");
+    return;
+  }
+  profile.education[updateIndex] = newEdu;
+  await profile.save();
+  res.status(202).send(profile);
 });
 
 function validateEducation(education) {
