@@ -39,7 +39,16 @@ router.post("/", auth, async (req, res) => {
   if (req.body.facebook) profileFields.social.facebook = req.body.facebook;
   if (req.body.linkedin) profileFields.social.linkedin = req.body.linkedin;
   if (req.body.instagram) profileFields.social.instagram = req.body.instagram;
-  const profile = new Profile(profileFields);
+  let profile = await Profile.findOne({ user: req.user._id });
+  if (profile) {
+    profile = await Profile.findOneAndUpdate(
+      { user: req.user._id },
+      { $set: profileFields },
+      { new: true }
+    );
+  } else {
+    profile = new Profile(profileFields);
+  }
   await profile.save();
   res.send(profile);
 });
